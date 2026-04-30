@@ -18,11 +18,11 @@ pipeline {
         }
 
         stage('Test') {
-            steps { sh 'mvn test -B' }
+            steps { sh 'mvn test -B -DforkCount=0' }
             post {
                 always {
                     junit allowEmptyResults: true,
-                          testResults: '**/target/surefire-reports/*.xml'
+                        testResults: '**/target/surefire-reports/*.xml'
                 }
             }
         }
