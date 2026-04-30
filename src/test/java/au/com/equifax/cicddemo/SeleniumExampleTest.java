@@ -9,11 +9,13 @@ import org.junit.Test;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@Ignore("Requiere contenedor Selenium externo - no disponible en CI")
 @Category(SystemTest.class)
 public class SeleniumExampleTest {
     private WebDriver driver;
