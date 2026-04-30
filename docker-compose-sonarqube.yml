@@ -1,0 +1,40 @@
+# Levanta SonarQube + base de datos PostgreSQL
+# Uso: docker compose -f docker-compose-sonarqube.yml up -d
+# UI: http://localhost:9000   (admin / admin al primer login)
+
+version: '3.8'
+
+services:
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    depends_on:
+      - sonar-db
+    environment:
+      SONAR_JDBC_URL:      jdbc:postgresql://sonar-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+    # Requerido en Linux: sysctl -w vm.max_map_count=524288
+    # En Windows con Docker Desktop no es necesario
+
+  sonar-db:
+    image: postgres:15-alpine
+    container_name: sonar-db
+    environment:
+      POSTGRES_USER:     sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB:       sonarqube
+    volumes:
+      - sonar_db_data:/var/lib/postgresql/data
+
+volumes:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
+  sonar_db_data:

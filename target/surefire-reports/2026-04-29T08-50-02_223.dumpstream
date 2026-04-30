@@ -1,0 +1,57 @@
+# Created at 2026-04-29T08:50:04.084
+Exception in thread "main" java.lang.reflect.InvocationTargetException
+
+# Created at 2026-04-29T08:50:04.085
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:118)
+
+# Created at 2026-04-29T08:50:04.087
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+
+# Created at 2026-04-29T08:50:04.092
+	at java.instrument/sun.instrument.InstrumentationImpl.loadClassAndStartAgent(InstrumentationImpl.java:560)
+
+# Created at 2026-04-29T08:50:04.093
+	at java.instrument/sun.instrument.InstrumentationImpl.loadClassAndCallPremain(InstrumentationImpl.java:572)
+
+# Created at 2026-04-29T08:50:04.095
+Caused by: java.lang.RuntimeException: Class java/lang/UnknownError could not be instrumented.
+
+# Created at 2026-04-29T08:50:04.096
+	at org.jacoco.agent.rt.internal_290345e.core.runtime.ModifiedSystemClassRuntime.createFor(ModifiedSystemClassRuntime.java:139)
+
+# Created at 2026-04-29T08:50:04.098
+	at org.jacoco.agent.rt.internal_290345e.core.runtime.ModifiedSystemClassRuntime.createFor(ModifiedSystemClassRuntime.java:100)
+
+# Created at 2026-04-29T08:50:04.099
+	at org.jacoco.agent.rt.internal_290345e.PreMain.createRuntime(PreMain.java:55)
+
+# Created at 2026-04-29T08:50:04.100
+	at org.jacoco.agent.rt.internal_290345e.PreMain.premain(PreMain.java:47)
+
+# Created at 2026-04-29T08:50:04.100
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+
+# Created at 2026-04-29T08:50:04.102
+	... 3 more
+
+# Created at 2026-04-29T08:50:04.104
+Caused by: java.lang.NoSuchFieldException: $jacocoAccess
+
+# Created at 2026-04-29T08:50:04.105
+	at java.base/java.lang.Class.getField(Class.java:2286)
+
+# Created at 2026-04-29T08:50:04.106
+	at org.jacoco.agent.rt.internal_290345e.core.runtime.ModifiedSystemClassRuntime.createFor(ModifiedSystemClassRuntime.java:137)
+
+# Created at 2026-04-29T08:50:04.107
+	... 7 more
+
+# Created at 2026-04-29T08:50:04.109
+*** java.lang.instrument ASSERTION FAILED ***: "!errorOutstanding" with message Outstanding error when calling method in invokeJavaAgentMainMethod at s\open\src\java.instrument\share\native\libinstrument\JPLISAgent.c line: 627
+
+# Created at 2026-04-29T08:50:04.110
+*** java.lang.instrument ASSERTION FAILED ***: "success" with message invokeJavaAgentMainMethod failed at s\open\src\java.instrument\share\native\libinstrument\JPLISAgent.c line: 466
+
+# Created at 2026-04-29T08:50:04.112
+*** java.lang.instrument ASSERTION FAILED ***: "result" with message agent load/premain call failed at s\open\src\java.instrument\share\native\libinstrument\JPLISAgent.c line: 429
+
