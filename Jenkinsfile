@@ -4,6 +4,8 @@ pipeline {
     environment {
         APP_NAME   = 'cicd-demo'
         DOCKER_TAG = 'latest'
+        SONAR_URL  = 'http://host.docker.internal:9000'
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -22,7 +24,13 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'mvn test -B -DforkCount=0 -Dexcludes="**/SeleniumExampleTest.java"'
+                // Excluimos SeleniumExampleTest (requiere contenedor Selenium externo)
+                // UserControllerIntTest falla si el nombre del job tiene espacios en el path
+                sh '''
+                    mvn test -B -DforkCount=0 \
+                        -Dtest="!SeleniumExampleTest" \
+                        -Dsurefire.failIfNoSpecifiedTests=false
+                '''
             }
             post {
                 always {
