@@ -4,8 +4,6 @@ pipeline {
     environment {
         APP_NAME   = 'cicd-demo'
         DOCKER_TAG = 'latest'
-        SONAR_URL  = 'http://host.docker.internal:9000'
-        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -18,19 +16,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests -B'
+                sh './mvnw clean package -DskipTests -B'
             }
         }
 
         stage('Test') {
             steps {
-                // Excluimos SeleniumExampleTest (requiere contenedor Selenium externo)
-                // UserControllerIntTest falla si el nombre del job tiene espacios en el path
-                sh '''
-                    mvn test -B -DforkCount=0 \
-                        -Dtest="!SeleniumExampleTest" \
-                        -Dsurefire.failIfNoSpecifiedTests=false
-                '''
+                sh './mvnw test -B -DforkCount=0 -Dexcludes="**/SeleniumExampleTest.java"'
             }
             post {
                 always {
@@ -43,7 +35,7 @@ pipeline {
         stage('Static Analysis (SonarQube)') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=cicd-demo -B'
+                    sh './mvnw sonar:sonar -Dsonar.projectKey=cicd-demo -B'
                 }
             }
         }
