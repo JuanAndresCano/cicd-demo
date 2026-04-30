@@ -14,11 +14,11 @@ pipeline {
         }
 
         stage('Build') {
-            steps { sh './mvnw clean package -DskipTests -B' }
+            steps { sh 'mvn clean package -DskipTests -B' }
         }
 
         stage('Test') {
-            steps { sh './mvnw test -B' }
+            steps { sh 'mvn test -B' }
             post {
                 always {
                     junit allowEmptyResults: true,
