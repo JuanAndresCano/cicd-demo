@@ -4,8 +4,6 @@ pipeline {
     environment {
         APP_NAME   = 'cicd-demo'
         DOCKER_TAG = 'latest'
-        SONAR_URL  = 'http://host.docker.internal:9000'
-        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -24,13 +22,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                // Excluimos SeleniumExampleTest (requiere contenedor Selenium externo)
-                // UserControllerIntTest falla si el nombre del job tiene espacios en el path
-                sh '''
-                    mvn test -B -DforkCount=0 \
-                        -Dtest="!SeleniumExampleTest" \
-                        -Dsurefire.failIfNoSpecifiedTests=false
-                '''
+                sh 'mvn test -B -DforkCount=0 -Dexcludes="**/SeleniumExampleTest.java"'
             }
             post {
                 always {
@@ -42,25 +34,16 @@ pipeline {
 
         stage('Static Analysis (SonarQube)') {
             steps {
-                sh '''
-                    mvn sonar:sonar \
-                        -Dsonar.projectKey=cicd-demo \
-                        -Dsonar.host.url=$SONAR_URL \
-                        -Dsonar.token=$SONAR_TOKEN \
-                        -B
-                '''
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=cicd-demo -B'
+                }
             }
         }
 
         stage('Quality Gate') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
-                    script {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            error "Quality Gate falló: ${qg.status}. Despliegue bloqueado."
-                        }
-                    }
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
