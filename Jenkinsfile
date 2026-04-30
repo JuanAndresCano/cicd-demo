@@ -97,7 +97,9 @@ pipeline {
     post {
         always {
             echo 'Limpiando espacio de trabajo...'
-            cleanWs()
+            script {
+                try { cleanWs() } catch (e) { echo "cleanWs omitido: ${e.message}" }
+            }
         }
         success {
             echo 'Pipeline completado exitosamente.'
