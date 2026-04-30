@@ -5,7 +5,7 @@ pipeline {
         APP_NAME   = 'cicd-demo'
         DOCKER_TAG = 'latest'
     }
-
+        
     stages {
 
         stage('Checkout') {
