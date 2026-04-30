@@ -2,30 +2,23 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME    = 'cicd-demo'
-        DOCKER_TAG  = 'latest'
-        SONAR_URL   = 'http://host.docker.internal:9000'
-        SONAR_TOKEN = credentials('sonar-token')
+        APP_NAME   = 'cicd-demo'
+        DOCKER_TAG = 'latest'
+        SONAR_URL  = 'http://sonarqube:9000'
     }
 
     stages {
 
         stage('Checkout') {
-            steps {
-                checkout scm
-            }
+            steps { checkout scm }
         }
 
         stage('Build') {
-            steps {
-                sh './mvnw clean package -DskipTests -B'
-            }
+            steps { sh './mvnw clean package -DskipTests -B' }
         }
 
         stage('Test') {
-            steps {
-                sh './mvnw test -B'
-            }
+            steps { sh './mvnw test -B' }
             post {
                 always {
                     junit allowEmptyResults: true,
@@ -36,25 +29,22 @@ pipeline {
 
         stage('Static Analysis (SonarQube)') {
             steps {
-                sh '''
-                    ./mvnw sonar:sonar \
-                        -Dsonar.projectKey=cicd-demo \
-                        -Dsonar.host.url=$SONAR_URL \
-                        -Dsonar.token=$SONAR_TOKEN \
-                        -B
-                '''
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                        ./mvnw sonar:sonar \
+                            -Dsonar.projectKey=cicd-demo \
+                            -Dsonar.host.url=$SONAR_URL \
+                            -Dsonar.token=$SONAR_TOKEN \
+                            -B
+                    '''
+                }
             }
         }
 
         stage('Quality Gate') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
-                    script {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            error "Quality Gate fallo: ${qg.status}. Despliegue bloqueado."
-                        }
-                    }
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -101,11 +91,7 @@ pipeline {
                 try { cleanWs() } catch (e) { echo "cleanWs omitido: ${e.message}" }
             }
         }
-        success {
-            echo 'Pipeline completado exitosamente.'
-        }
-        failure {
-            echo 'Pipeline fallo. Revisa los logs de la etapa en rojo.'
-        }
+        success { echo 'Pipeline completado exitosamente.' }
+        failure { echo 'Pipeline fallo. Revisa los logs.' }
     }
 }
