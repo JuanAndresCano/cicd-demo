@@ -31,7 +31,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
-                        ./mvnw sonar:sonar \
+                        mvn sonar:sonar \
                             -Dsonar.projectKey=cicd-demo \
                             -Dsonar.host.url=$SONAR_URL \
                             -Dsonar.token=$SONAR_TOKEN \
