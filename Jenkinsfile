@@ -7,6 +7,10 @@ pipeline {
         SONAR_URL  = 'http://sonarqube:9000'
     }
 
+    tools {
+        maven 'Maven'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -22,7 +26,7 @@ pipeline {
             post {
                 always {
                     junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml'
+                          testResults: '**/target/surefire-reports/*.xml'
                 }
             }
         }
@@ -92,6 +96,6 @@ pipeline {
             }
         }
         success { echo 'Pipeline completado exitosamente.' }
-        failure { echo 'Pipeline fallo. Revisa los logs.' }
+        failure  { echo 'Pipeline fallo. Revisa los logs.' }
     }
 }
