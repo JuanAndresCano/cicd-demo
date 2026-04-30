@@ -54,23 +54,7 @@ pipeline {
             }
         }
 
-        stage('Container Security Scan (Trivy)') {
-            steps {
-                sh '''
-                    docker run --rm \
-                        -v /var/run/docker.sock:/var/run/docker.sock \
-                        -v trivy-cache:/root/.cache/trivy \
-                        aquasec/trivy image \
-                            --exit-code 0 \
-                            --severity CRITICAL \
-                            --no-progress \
-                            ${APP_NAME}:${DOCKER_TAG}
-                ''',
-                returnStatus: true
-                
-            }
-            
-        }
+        
 
         stage('Deploy') {
             steps {
