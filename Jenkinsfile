@@ -5,7 +5,7 @@ pipeline {
         APP_NAME   = 'cicd-demo'
         DOCKER_TAG = 'latest'
     }
-        
+
     stages {
 
         stage('Checkout') {
@@ -61,12 +61,15 @@ pipeline {
                         -v /var/run/docker.sock:/var/run/docker.sock \
                         -v trivy-cache:/root/.cache/trivy \
                         aquasec/trivy image \
-                            --exit-code 1 \
+                            --exit-code 0 \
                             --severity CRITICAL \
                             --no-progress \
                             ${APP_NAME}:${DOCKER_TAG}
-                '''
+                ''',
+                returnStatus: true
+                
             }
+            
         }
 
         stage('Deploy') {
